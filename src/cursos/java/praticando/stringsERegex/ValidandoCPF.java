@@ -1,0 +1,20 @@
+package cursos.java.praticando.stringsERegex;
+
+import java.util.Scanner;
+
+public class ValidandoCPF {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Digite o CPF: ");
+        String cpf = scanner.nextLine();
+        scanner.close();
+
+        String regex = "\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}";
+
+        if (cpf.matches(regex)) {
+            System.out.println("O CPF " + cpf + " está no formato válido.");
+        } else {
+            System.out.println("O CPF " + cpf + " não está no formato válido.");
+        }
+    }
+}
