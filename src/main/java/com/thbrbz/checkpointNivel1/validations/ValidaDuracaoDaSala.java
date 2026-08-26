@@ -1,6 +1,6 @@
 package com.thbrbz.checkpointNivel1.validations;
 
-import com.thbrbz.checkpointNivel1.Exceptions.SalaException;
+import com.thbrbz.checkpointNivel1.exceptions.SalaException;
 
 import java.time.LocalDate;
 import java.time.Period;

@@ -8,13 +8,14 @@ import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDate;
 
-public record SalaDto(@NotNull Long id,
-                      Reserva reserva,
-                      @NotBlank String nome,
-                      @NotNull @Positive Long capacidade,
-                      @NotNull LocalDate dataInicio,
-                      @NotNull LocalDate dataFim,
-                      @NotNull Boolean ativa) {
+public record SalaDto(
+        Long id,
+        Reserva reserva,
+        String nome,
+        Long capacidade,
+        LocalDate dataInicio,
+        LocalDate dataFim,
+        Boolean ativa) {
 
     public SalaDto(Sala s) {
         this(s.getId(), s.getReserva(), s.getNome(), s.getCapacidade(), s.getDataInicio(), s.getDataFim(), s.isAtiva());

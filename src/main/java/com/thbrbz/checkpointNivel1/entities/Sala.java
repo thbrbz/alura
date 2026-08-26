@@ -82,4 +82,8 @@ public class Sala implements Serializable {
         this.ativa = dto.ativa();
         this.reserva = dto.reserva();
     }
+
+    public void desativarSala() {
+        this.ativa = false;
+    }
 }

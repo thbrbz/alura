@@ -1,6 +1,6 @@
 package com.thbrbz.checkpointNivel1.controllers;
 
-import com.thbrbz.checkpointNivel1.Exceptions.SalaException;
+import com.thbrbz.checkpointNivel1.exceptions.SalaException;
 import com.thbrbz.checkpointNivel1.dto.SalaDto;
 import com.thbrbz.checkpointNivel1.dto.SalvaSalaDto;
 import com.thbrbz.checkpointNivel1.services.SalaService;
@@ -30,14 +30,14 @@ public class SalaController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<SalaDto>> listarTodas() {
-        return ResponseEntity.status(HttpStatus.OK).body(salaService.getAll());
+    public ResponseEntity<List<SalaDto>> listar() {
+        return ResponseEntity.status(HttpStatus.OK).body(salaService.buscarTodos());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<SalaDto> buscar(@PathVariable Long id) {
         try {
-            return ResponseEntity.ok(salaService.buscar(id));
+            return ResponseEntity.ok(salaService.buscarDto(id));
         } catch (SalaException e) {
             return ResponseEntity.notFound().build();
         }
@@ -54,8 +54,12 @@ public class SalaController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletar(@PathVariable Long id) {
-        salaService.deletar(id);
-        return ResponseEntity.ok().body("Sala %s removida com sucesso!".formatted(id));
+    public ResponseEntity<String> desativar(@PathVariable Long id) {
+        try {
+            salaService.desativar(id);
+            return ResponseEntity.ok().body("Sala %s desativada com sucesso!".formatted(id));
+        } catch (SalaException e) {
+            return ResponseEntity.unprocessableContent().body(e.getMessage());
+        }
     }
 }

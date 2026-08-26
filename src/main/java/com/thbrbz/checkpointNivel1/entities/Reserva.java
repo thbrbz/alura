@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,8 +18,8 @@ public class Reserva implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "reserva")
-    private List<Usuario> usuarios;
+    @ManyToMany(mappedBy = "reservas")
+    private List<Usuario> usuarios = new ArrayList<>();
 
     @OneToOne(mappedBy = "reserva")
     private Sala sala;
