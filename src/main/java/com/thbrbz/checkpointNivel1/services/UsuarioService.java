@@ -8,6 +8,8 @@ import com.thbrbz.checkpointNivel1.exceptions.UsuarioException;
 import com.thbrbz.checkpointNivel1.repositories.UsuarioRepository;
 import com.thbrbz.checkpointNivel1.validations.ValidaSenha;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,8 +32,8 @@ public class UsuarioService {
         return new UsuarioDto(usuario);
     }
 
-    public List<UsuarioDto> listar() {
-        return usuarioRepository.findAll().stream().map(UsuarioDto::new).toList();
+    public Page<UsuarioDto> listar(Pageable pageable) {
+        return usuarioRepository.findAll(pageable).map(UsuarioDto::new);
     }
 
     private Usuario buscar(Long id) {

@@ -6,6 +6,9 @@ import com.thbrbz.checkpointNivel1.dto.UsuarioDto;
 import com.thbrbz.checkpointNivel1.services.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -29,8 +32,8 @@ public class UsuarioController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UsuarioDto>> listar() {
-        return ResponseEntity.ok(usuarioService.listar());
+    public ResponseEntity<Page<UsuarioDto>> listar(@PageableDefault(size = 20, sort = {"id"}) Pageable pageable) {
+        return ResponseEntity.ok(usuarioService.listar(pageable));
     }
 
     @GetMapping("/{id}")

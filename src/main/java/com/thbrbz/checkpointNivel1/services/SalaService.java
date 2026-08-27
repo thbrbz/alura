@@ -7,6 +7,8 @@ import com.thbrbz.checkpointNivel1.entities.Sala;
 import com.thbrbz.checkpointNivel1.exceptions.SalaException;
 import com.thbrbz.checkpointNivel1.repositories.SalaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,8 +27,8 @@ public class SalaService {
         return new SalaDto(salaRepository.save(sala));
     }
 
-    public List<SalaDto> buscarTodos() {
-        return salaRepository.findAll().stream().map(SalaDto::new).toList();
+    public Page<SalaDto> listar(Pageable pageable) {
+        return salaRepository.findAll(pageable).map(SalaDto::new);
     }
 
     public Sala buscar(Long id) {

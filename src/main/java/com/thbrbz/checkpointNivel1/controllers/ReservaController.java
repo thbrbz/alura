@@ -5,6 +5,9 @@ import com.thbrbz.checkpointNivel1.dto.ReservaDto;
 import com.thbrbz.checkpointNivel1.services.ReservaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -34,8 +37,8 @@ public class ReservaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ReservaDto>> listar() {
-        return ResponseEntity.ok(reservaService.listar());
+    public ResponseEntity<Page<ReservaDto>> listar(@PageableDefault(size = 20, sort = {"id"}) Pageable pageable) {
+        return ResponseEntity.ok(reservaService.listar(pageable));
     }
 
     @GetMapping("/{id}")

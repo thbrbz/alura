@@ -6,12 +6,14 @@ import com.thbrbz.checkpointNivel1.dto.SalvaSalaDto;
 import com.thbrbz.checkpointNivel1.services.SalaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/salas")
@@ -29,8 +31,8 @@ public class SalaController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<SalaDto>> listar() {
-        return ResponseEntity.ok(salaService.buscarTodos());
+    public ResponseEntity<Page<SalaDto>> listar(@PageableDefault(size = 20, sort = {"id"}) Pageable pageable) {
+        return ResponseEntity.ok(salaService.listar(pageable));
     }
 
     @GetMapping("/{id}")
