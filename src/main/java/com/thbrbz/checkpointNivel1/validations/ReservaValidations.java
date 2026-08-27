@@ -4,5 +4,5 @@ import com.thbrbz.checkpointNivel1.dto.CriaReservaDto;
 
 public interface ReservaValidations {
 
-    default void validar(CriaReservaDto dto) {}
+    void validar(CriaReservaDto dto);
 }

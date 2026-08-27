@@ -3,64 +3,52 @@ package com.thbrbz.checkpointNivel1.controllers;
 import com.thbrbz.checkpointNivel1.dto.AtualizaUsuarioDto;
 import com.thbrbz.checkpointNivel1.dto.SalvaUsuarioDto;
 import com.thbrbz.checkpointNivel1.dto.UsuarioDto;
-import com.thbrbz.checkpointNivel1.exceptions.UsuarioException;
 import com.thbrbz.checkpointNivel1.services.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
 
     @PostMapping
-    public ResponseEntity<String> salvar(@Valid @RequestBody SalvaUsuarioDto dto){
-        try {
-            usuarioService.salvar(dto);
-            return ResponseEntity.status(HttpStatus.OK).body("Usuário salvo com sucesso!");
-        } catch (UsuarioException e) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).body(e.getMessage());
-        }
+    public ResponseEntity<UsuarioDto> salvar(@RequestBody @Valid SalvaUsuarioDto dto, UriComponentsBuilder uriBuilder){
+        UsuarioDto usuario = usuarioService.salvar(dto);
+        URI endereco = uriBuilder.path("/users/{id}").buildAndExpand(usuario.id()).toUri();
+
+        return ResponseEntity.created(endereco).body(usuario);
     }
 
-    @GetMapping()
-    public ResponseEntity<List<UsuarioDto>> listar() {
-        return ResponseEntity.status(HttpStatus.OK).body(usuarioService.buscarTodos());
+    @GetMapping
+    public ResponseEntity<Page<UsuarioDto>> listar(@PageableDefault(size = 20, sort = {"id"}) Pageable pageable) {
+        return ResponseEntity.ok(usuarioService.listar(pageable));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioDto> buscar(@PathVariable Long id) {
-        try {
-            return ResponseEntity.ok(usuarioService.buscarDto(id));
-        } catch (UsuarioException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(usuarioService.buscarDto(id));
     }
 
-    @PutMapping
-    public ResponseEntity<String> atualizar(@Valid @RequestBody AtualizaUsuarioDto dto) {
-        try {
-            usuarioService.Atualizar(dto);
-            return ResponseEntity.ok("Usuário atualizado com sucesso!");
-        } catch (UsuarioException e) {
-            return ResponseEntity.unprocessableContent().body(e.getMessage());
-        }
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioDto> atualizar(@PathVariable Long id, @RequestBody @Valid AtualizaUsuarioDto dto) {
+        return ResponseEntity.ok(usuarioService.Atualizar(id, dto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletar(@PathVariable Long id) {
-        try {
-            usuarioService.deletar(id);
-            return ResponseEntity.ok().body("Usuário %s excluído com sucesso!".formatted(id));
-        } catch (UsuarioException e) {
-            return ResponseEntity.unprocessableContent().body(e.getMessage());
-        }
+        usuarioService.deletar(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -6,8 +6,9 @@ import com.thbrbz.checkpointNivel1.dto.SalvaSalaDto;
 import com.thbrbz.checkpointNivel1.entities.Sala;
 import com.thbrbz.checkpointNivel1.exceptions.SalaException;
 import com.thbrbz.checkpointNivel1.repositories.SalaRepository;
-import com.thbrbz.checkpointNivel1.validations.ReservaValidations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,12 +22,13 @@ public class SalaService {
     private SalaRepository salaRepository;
 
     @Transactional
-    public void salvar(SalvaSalaDto dto) {
-        salaRepository.save(new Sala(dto));
+    public SalaDto salvar(SalvaSalaDto dto) {
+        Sala sala = new Sala(dto);
+        return new SalaDto(salaRepository.save(sala));
     }
 
-    public List<SalaDto> buscarTodos() {
-        return salaRepository.findAll().stream().map(SalaDto::new).toList();
+    public Page<SalaDto> listar(Pageable pageable) {
+        return salaRepository.findAll(pageable).map(SalaDto::new);
     }
 
     public Sala buscar(Long id) {
@@ -39,9 +41,10 @@ public class SalaService {
     }
 
     @Transactional
-    public void Atualizar(AtualizaSalaDto dto) {
-        Sala s = this.buscar(dto.id());
+    public SalaDto Atualizar(Long id, AtualizaSalaDto dto) {
+        Sala s = this.buscar(id);
         s.atualizarDados(dto);
+        return new SalaDto(s);
     }
 
     @Transactional

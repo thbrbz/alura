@@ -7,9 +7,9 @@ import com.thbrbz.checkpointNivel1.entities.Usuario;
 import com.thbrbz.checkpointNivel1.exceptions.UsuarioException;
 import com.thbrbz.checkpointNivel1.repositories.UsuarioRepository;
 import com.thbrbz.checkpointNivel1.validations.ValidaSenha;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,13 +26,14 @@ public class UsuarioService {
     private ValidaSenha validaSenha;
 
     @Transactional
-    public void salvar(SalvaUsuarioDto dto) {
+    public UsuarioDto salvar(SalvaUsuarioDto dto) {
         validaSenha.validar(dto.senha());
-        usuarioRepository.save(new Usuario(dto));
+        Usuario usuario = usuarioRepository.save(new Usuario(dto));
+        return new UsuarioDto(usuario);
     }
 
-    public List<UsuarioDto> buscarTodos() {
-        return usuarioRepository.findAll().stream().map(UsuarioDto::new).toList();
+    public Page<UsuarioDto> listar(Pageable pageable) {
+        return usuarioRepository.findAll(pageable).map(UsuarioDto::new);
     }
 
     private Usuario buscar(Long id) {
@@ -49,11 +50,13 @@ public class UsuarioService {
     }
 
     @Transactional
-    public void Atualizar(AtualizaUsuarioDto dto) {
+    public UsuarioDto Atualizar(Long id, AtualizaUsuarioDto dto) {
         validaSenha.validar(dto.senha());
 
-        Usuario u = this.buscar(dto.id());
+        Usuario u = this.buscar(id);
         u.atualizarDados(dto);
+
+        return new UsuarioDto(u);
     }
 
     @Transactional
