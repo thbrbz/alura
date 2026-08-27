@@ -1,12 +1,14 @@
 package com.thbrbz.checkpointNivel1.entities;
 
+import com.thbrbz.checkpointNivel1.dto.AtualizaSalaDto;
 import com.thbrbz.checkpointNivel1.dto.SalaDto;
 import com.thbrbz.checkpointNivel1.dto.SalvaSalaDto;
 import jakarta.persistence.*;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "salas")
@@ -18,20 +20,14 @@ public class Sala implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private Reserva reserva;
+    @OneToMany(mappedBy = "sala", cascade = CascadeType.ALL)
+    private List<Reserva> reservas = new ArrayList<>();
 
     @Column(nullable = false, unique = true)
     private String nome;
 
     @Column(nullable = false)
     private Long capacidade;
-
-    @Column(nullable = false)
-    private LocalDate dataInicio;
-
-    @Column(nullable = false)
-    private LocalDate dataFim;
 
     @Column(nullable = false)
     private Boolean ativa;
@@ -41,8 +37,6 @@ public class Sala implements Serializable {
     public Sala(SalvaSalaDto dto) {
         nome = dto.nome();
         capacidade = dto.capacidade();
-        dataInicio = dto.dataInicio();
-        dataFim = dto.dataFim();
         ativa = true;
     }
 
@@ -50,8 +44,8 @@ public class Sala implements Serializable {
         return id;
     }
 
-    public Reserva getReserva() {
-        return reserva;
+    public List<Reserva> getReservas() {
+        return reservas;
     }
 
     public String getNome() {
@@ -62,24 +56,16 @@ public class Sala implements Serializable {
         return capacidade;
     }
 
-    public LocalDate getDataInicio() {
-        return dataInicio;
-    }
-
-    public LocalDate getDataFim() {
-        return dataFim;
-    }
-
     public boolean isAtiva() {
         return ativa;
     }
 
-    public void atualizarDados(SalaDto dto) {
+    public void atualizarDados(AtualizaSalaDto dto) {
         this.nome = dto.nome();
         this.capacidade = dto.capacidade();
-        this.dataInicio = dto.dataInicio();
-        this.dataFim = dto.dataFim();
-        this.ativa = dto.ativa();
-        this.reserva = dto.reserva();
+    }
+
+    public void desativarSala() {
+        this.ativa = false;
     }
 }

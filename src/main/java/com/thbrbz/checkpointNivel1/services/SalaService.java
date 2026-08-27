@@ -1,11 +1,12 @@
 package com.thbrbz.checkpointNivel1.services;
 
-import com.thbrbz.checkpointNivel1.Exceptions.SalaException;
+import com.thbrbz.checkpointNivel1.dto.AtualizaSalaDto;
 import com.thbrbz.checkpointNivel1.dto.SalaDto;
 import com.thbrbz.checkpointNivel1.dto.SalvaSalaDto;
 import com.thbrbz.checkpointNivel1.entities.Sala;
+import com.thbrbz.checkpointNivel1.exceptions.SalaException;
 import com.thbrbz.checkpointNivel1.repositories.SalaRepository;
-import com.thbrbz.checkpointNivel1.validations.SalaValidations;
+import com.thbrbz.checkpointNivel1.validations.ReservaValidations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,39 +20,33 @@ public class SalaService {
     @Autowired
     private SalaRepository salaRepository;
 
-    @Autowired
-    private List<SalaValidations> validations;
-
     @Transactional
     public void salvar(SalvaSalaDto dto) {
-        validations.forEach(v -> v.validar(dto.dataInicio(), dto.dataFim()));
         salaRepository.save(new Sala(dto));
     }
 
-    public List<SalaDto> getAll() {
+    public List<SalaDto> buscarTodos() {
         return salaRepository.findAll().stream().map(SalaDto::new).toList();
     }
 
-    public SalaDto buscar(Long id) {
-        return salaRepository.findById(id).map(SalaDto::new)
+    public Sala buscar(Long id) {
+        return salaRepository.findById(id)
                 .orElseThrow(() -> new SalaException("Sala não encontrada com o id: " + id));
     }
 
+    public SalaDto buscarDto(Long id) {
+        return new SalaDto(this.buscar(id));
+    }
+
     @Transactional
-    public void Atualizar(SalaDto dto) {
-        validations.forEach(v -> v.validar(dto.dataInicio(), dto.dataFim()));
-
-        Sala s = salaRepository.findById(dto.id())
-                .orElseThrow(() -> new SalaException("Sala não encontrada com o id: " + dto.id()));
-
+    public void Atualizar(AtualizaSalaDto dto) {
+        Sala s = this.buscar(dto.id());
         s.atualizarDados(dto);
     }
 
     @Transactional
-    public void deletar(Long id) {
-        Sala s = salaRepository.findById(id)
-                .orElseThrow(() -> new SalaException("Sala não encontrada com o id: " + id));
-
-        salaRepository.delete(s);
+    public void desativar(Long id) {
+        Sala s = this.buscar(id);
+        s.desativarSala();
     }
 }
