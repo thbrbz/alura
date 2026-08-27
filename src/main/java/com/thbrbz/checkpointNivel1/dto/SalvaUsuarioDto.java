@@ -7,5 +7,5 @@ import jakarta.validation.constraints.Size;
 public record SalvaUsuarioDto(
         @NotBlank @Size(min = 3) String nome,
         @NotBlank @Email String email,
-        @NotBlank String senha) {
-}
+        @NotBlank String senha
+) {}

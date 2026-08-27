@@ -1,11 +1,12 @@
 package com.thbrbz.checkpointNivel1.services;
 
+import com.thbrbz.checkpointNivel1.dto.AtualizaSalaDto;
 import com.thbrbz.checkpointNivel1.dto.SalaDto;
 import com.thbrbz.checkpointNivel1.dto.SalvaSalaDto;
 import com.thbrbz.checkpointNivel1.entities.Sala;
 import com.thbrbz.checkpointNivel1.exceptions.SalaException;
 import com.thbrbz.checkpointNivel1.repositories.SalaRepository;
-import com.thbrbz.checkpointNivel1.validations.SalaValidations;
+import com.thbrbz.checkpointNivel1.validations.ReservaValidations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,12 +20,8 @@ public class SalaService {
     @Autowired
     private SalaRepository salaRepository;
 
-    @Autowired
-    private List<SalaValidations> validations;
-
     @Transactional
     public void salvar(SalvaSalaDto dto) {
-        validations.forEach(v -> v.validar(dto.dataInicio(), dto.dataFim()));
         salaRepository.save(new Sala(dto));
     }
 
@@ -32,26 +29,24 @@ public class SalaService {
         return salaRepository.findAll().stream().map(SalaDto::new).toList();
     }
 
-    public SalaDto buscarDto(Long id) {
-        return new SalaDto(buscar(id));
-    }
-
-    private Sala buscar(Long id) {
+    public Sala buscar(Long id) {
         return salaRepository.findById(id)
                 .orElseThrow(() -> new SalaException("Sala não encontrada com o id: " + id));
     }
 
-    @Transactional
-    public void Atualizar(SalaDto dto) {
-        validations.forEach(v -> v.validar(dto.dataInicio(), dto.dataFim()));
+    public SalaDto buscarDto(Long id) {
+        return new SalaDto(this.buscar(id));
+    }
 
-        Sala s = buscar(dto.id());
+    @Transactional
+    public void Atualizar(AtualizaSalaDto dto) {
+        Sala s = this.buscar(dto.id());
         s.atualizarDados(dto);
     }
 
     @Transactional
     public void desativar(Long id) {
-        Sala s = buscar(id);
+        Sala s = this.buscar(id);
         s.desativarSala();
     }
 }

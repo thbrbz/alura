@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 
 public record AtualizaUsuarioDto(
         @NotNull Long id,
-        @NotBlank @Size(min = 3) String nome,
+        @NotBlank @Size(min = 2) String nome,
         @NotBlank @Email String email,
-        @NotBlank String senha) {
-}
+        @NotBlank String senha
+) {}

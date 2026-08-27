@@ -28,12 +28,7 @@ public class Usuario implements Serializable {
     @Column(nullable = false)
     private String nome;
 
-    @ManyToMany
-    @JoinTable(
-            name = "usuario_reserva",
-            joinColumns = @JoinColumn(name = "usuario_id"),
-            inverseJoinColumns = @JoinColumn(name = "reserva_id")
-    )
+    @ManyToMany(mappedBy = "usuarios")
     private List<Reserva> reservas = new ArrayList<>();
 
     public Usuario() {}
@@ -65,8 +60,8 @@ public class Usuario implements Serializable {
     }
 
     public void atualizarDados(AtualizaUsuarioDto dto) {
+        this.nome = dto.nome();
         this.email = dto.email();
         this.senha = dto.senha();
-        this.nome = dto.nome();
     }
 }

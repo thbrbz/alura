@@ -1,5 +1,6 @@
 package com.thbrbz.checkpointNivel1.controllers;
 
+import com.thbrbz.checkpointNivel1.dto.AtualizaSalaDto;
 import com.thbrbz.checkpointNivel1.exceptions.SalaException;
 import com.thbrbz.checkpointNivel1.dto.SalaDto;
 import com.thbrbz.checkpointNivel1.dto.SalvaSalaDto;
@@ -44,7 +45,7 @@ public class SalaController {
     }
 
     @PutMapping
-    public ResponseEntity<String> atualizar(@Valid @RequestBody SalaDto dto) {
+    public ResponseEntity<String> atualizar(@Valid @RequestBody AtualizaSalaDto dto) {
         try {
             salaService.Atualizar(dto);
             return ResponseEntity.ok("Sala atualizada com sucesso!");

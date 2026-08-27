@@ -6,7 +6,8 @@ public record UsuarioDto(
         Long id,
         String nome,
         String email,
-        String senha) {
+        String senha
+) {
 
     public UsuarioDto(Usuario u) {
         this(u.getId(), u.getNome(), u.getEmail(), u.getSenha());
