@@ -50,7 +50,7 @@ public class UsuarioService {
     }
 
     @Transactional
-    public UsuarioDto Atualizar(Long id, AtualizaUsuarioDto dto) {
+    public UsuarioDto atualizar(Long id, AtualizaUsuarioDto dto) {
         validaSenha.validar(dto.senha());
 
         Usuario u = this.buscar(id);

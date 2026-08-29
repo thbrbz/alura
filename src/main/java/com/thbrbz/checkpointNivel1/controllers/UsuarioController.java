@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -43,7 +42,7 @@ public class UsuarioController {
 
     @PutMapping("/{id}")
     public ResponseEntity<UsuarioDto> atualizar(@PathVariable Long id, @RequestBody @Valid AtualizaUsuarioDto dto) {
-        return ResponseEntity.ok(usuarioService.Atualizar(id, dto));
+        return ResponseEntity.ok(usuarioService.atualizar(id, dto));
     }
 
     @DeleteMapping("/{id}")

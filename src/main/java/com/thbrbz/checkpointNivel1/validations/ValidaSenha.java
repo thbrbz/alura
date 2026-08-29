@@ -1,7 +1,9 @@
 package com.thbrbz.checkpointNivel1.validations;
 
 import com.thbrbz.checkpointNivel1.exceptions.UsuarioException;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ValidaSenha {
 
     public void validar(String senha) {
