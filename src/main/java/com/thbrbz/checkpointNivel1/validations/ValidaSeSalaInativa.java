@@ -5,7 +5,9 @@ import com.thbrbz.checkpointNivel1.entities.Sala;
 import com.thbrbz.checkpointNivel1.exceptions.ReservaException;
 import com.thbrbz.checkpointNivel1.services.SalaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ValidaSeSalaInativa implements ReservaValidations{
 
     @Autowired
