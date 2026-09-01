@@ -5,9 +5,9 @@ import com.thbrbz.checkpointNivel1.dto.ReservaDto;
 import com.thbrbz.checkpointNivel1.entities.Reserva;
 import com.thbrbz.checkpointNivel1.entities.Sala;
 import com.thbrbz.checkpointNivel1.entities.Usuario;
-import com.thbrbz.checkpointNivel1.exceptions.ReservaException;
 import com.thbrbz.checkpointNivel1.repositories.ReservaRepository;
 import com.thbrbz.checkpointNivel1.validations.ReservaValidations;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -54,8 +54,7 @@ public class ReservaService {
     }
 
     public Reserva buscar(Long id) {
-        return reservaRepository.findById(id)
-                .orElseThrow(() -> new ReservaException("Reserva não encontrada com o id: " + id));
+        return reservaRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
     public ReservaDto buscarDto(Long id) {

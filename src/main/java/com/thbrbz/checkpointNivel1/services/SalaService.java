@@ -4,8 +4,8 @@ import com.thbrbz.checkpointNivel1.dto.AtualizaSalaDto;
 import com.thbrbz.checkpointNivel1.dto.SalaDto;
 import com.thbrbz.checkpointNivel1.dto.SalvaSalaDto;
 import com.thbrbz.checkpointNivel1.entities.Sala;
-import com.thbrbz.checkpointNivel1.exceptions.SalaException;
 import com.thbrbz.checkpointNivel1.repositories.SalaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,8 +30,7 @@ public class SalaService {
     }
 
     public Sala buscar(Long id) {
-        return salaRepository.findById(id)
-                .orElseThrow(() -> new SalaException("Sala não encontrada com o id: " + id));
+        return salaRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
     public SalaDto buscarDto(Long id) {

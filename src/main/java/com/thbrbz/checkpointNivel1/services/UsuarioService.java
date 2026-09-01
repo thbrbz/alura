@@ -4,9 +4,9 @@ import com.thbrbz.checkpointNivel1.dto.AtualizaUsuarioDto;
 import com.thbrbz.checkpointNivel1.dto.SalvaUsuarioDto;
 import com.thbrbz.checkpointNivel1.dto.UsuarioDto;
 import com.thbrbz.checkpointNivel1.entities.Usuario;
-import com.thbrbz.checkpointNivel1.exceptions.UsuarioException;
 import com.thbrbz.checkpointNivel1.repositories.UsuarioRepository;
 import com.thbrbz.checkpointNivel1.validations.ValidaSenha;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,8 +37,7 @@ public class UsuarioService {
     }
 
     private Usuario buscar(Long id) {
-        return usuarioRepository.findById(id)
-                .orElseThrow(() -> new UsuarioException("Usuario não encontrado com o id: " + id));
+        return usuarioRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
     public UsuarioDto buscarDto(Long id) {
