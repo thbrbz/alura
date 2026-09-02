@@ -6,6 +6,7 @@ import com.thbrbz.checkpointNivel1.dto.SalvaSalaDto;
 import com.thbrbz.checkpointNivel1.entities.Sala;
 import com.thbrbz.checkpointNivel1.exceptions.SalaException;
 import com.thbrbz.checkpointNivel1.repositories.SalaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -83,7 +84,7 @@ class SalaServiceTest {
     void deveLancarExcecaoQuandoSalaNaoExiste() {
         when(salaRepository.findById(99L)).thenReturn(Optional.empty());
 
-        SalaException exception = assertThrows(SalaException.class, () -> salaService.buscar(99L));
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> salaService.buscar(99L));
 
         assertTrue(exception.getMessage().contains("99"));
     }

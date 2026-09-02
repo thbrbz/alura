@@ -9,6 +9,7 @@ import com.thbrbz.checkpointNivel1.enums.ReservaStatus;
 import com.thbrbz.checkpointNivel1.exceptions.ReservaException;
 import com.thbrbz.checkpointNivel1.repositories.ReservaRepository;
 import com.thbrbz.checkpointNivel1.validations.ReservaValidations;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -125,7 +126,7 @@ class ReservaServiceTest {
     void deveLancarExcecaoQuandoReservaNaoExiste() {
         when(reservaRepository.findById(99L)).thenReturn(Optional.empty());
 
-        ReservaException exception = assertThrows(ReservaException.class, () -> reservaService.buscar(99L));
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> reservaService.buscar(99L));
 
         assertTrue(exception.getMessage().contains("99"));
     }

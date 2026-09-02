@@ -37,7 +37,8 @@ public class UsuarioService {
     }
 
     private Usuario buscar(Long id) {
-        return usuarioRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        return usuarioRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrada com o ID: " + id));
     }
 
     public UsuarioDto buscarDto(Long id) {

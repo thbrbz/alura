@@ -54,7 +54,8 @@ public class ReservaService {
     }
 
     public Reserva buscar(Long id) {
-        return reservaRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        return reservaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Reserva não encontrada com o ID: " + id));
     }
 
     public ReservaDto buscarDto(Long id) {

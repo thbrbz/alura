@@ -30,7 +30,8 @@ public class SalaService {
     }
 
     public Sala buscar(Long id) {
-        return salaRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        return salaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Sala não encontrada com o ID: " + id));
     }
 
     public SalaDto buscarDto(Long id) {

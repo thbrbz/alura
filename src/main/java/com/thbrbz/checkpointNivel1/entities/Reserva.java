@@ -41,6 +41,8 @@ public class Reserva implements Serializable {
     @Column(nullable = false)
     private ReservaStatus status;
 
+    public Reserva() {}
+
     public Reserva(LocalDateTime dataInicio, LocalDateTime dataFim, Sala sala, List<Usuario> usuarios) {
         this.dataInicio = dataInicio;
         this.dataFim = dataFim;

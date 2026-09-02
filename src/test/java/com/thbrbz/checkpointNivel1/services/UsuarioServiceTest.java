@@ -7,6 +7,7 @@ import com.thbrbz.checkpointNivel1.entities.Usuario;
 import com.thbrbz.checkpointNivel1.exceptions.UsuarioException;
 import com.thbrbz.checkpointNivel1.repositories.UsuarioRepository;
 import com.thbrbz.checkpointNivel1.validations.ValidaSenha;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -127,7 +128,7 @@ class UsuarioServiceTest {
     void deveLancarExcecaoQuandoUsuarioNaoExiste() {
         when(usuarioRepository.findById(99L)).thenReturn(Optional.empty());
 
-        UsuarioException exception = assertThrows(UsuarioException.class, () -> usuarioService.buscarDto(99L));
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> usuarioService.buscarDto(99L));
 
         assertTrue(exception.getMessage().contains("99"));
     }
