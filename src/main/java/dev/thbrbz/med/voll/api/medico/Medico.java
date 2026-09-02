@@ -25,11 +25,13 @@ public class Medico {
     private Endereco endereco;
 
     private String nome;
+    private String telefone;
     private String email;
     private String crm;
 
     public Medico(DadosCadastroMedido dados) {
         this.nome = dados.nome();
+        this.telefone = dados.telefone();
         this.email = dados.email();
         this.crm = dados.crm();
         this.especialidade = dados.especialidade();
