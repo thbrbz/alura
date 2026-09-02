@@ -1,9 +1,6 @@
 package dev.thbrbz.med.voll.api.controller;
 
-import dev.thbrbz.med.voll.api.paciente.DadosCadastroPaciente;
-import dev.thbrbz.med.voll.api.paciente.DadosListagemPaciente;
-import dev.thbrbz.med.voll.api.paciente.Paciente;
-import dev.thbrbz.med.voll.api.paciente.PacienteRepository;
+import dev.thbrbz.med.voll.api.paciente.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,7 +24,20 @@ public class PacienteController {
 
     @GetMapping
     public Page<DadosListagemPaciente> listar(@PageableDefault(page = 0, size = 10, sort = {"nome"}) Pageable paginacao) {
-        return repository.findAll(paginacao).map(DadosListagemPaciente::new);
+        return repository.findAllByAtivoTrue(paginacao).map(DadosListagemPaciente::new);
     }
 
+    @PutMapping
+    @Transactional
+    public void atualizar(@RequestBody @Valid DadosAtualizacaoPaciente dados) {
+        var paciente = repository.getReferenceById(dados.id());
+        paciente.atualizarInformacoes(dados);
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public void remover(@PathVariable Long id) {
+        var paciente = repository.getReferenceById(id);
+        paciente.inativar();
+    }
 }

@@ -1,8 +1,6 @@
 package dev.thbrbz.med.voll.api.controller;
 
-import dev.thbrbz.med.voll.api.medico.DadosCadastroMedido;
-import dev.thbrbz.med.voll.api.medico.Medico;
-import dev.thbrbz.med.voll.api.medico.MedicoRepository;
+import dev.thbrbz.med.voll.api.medico.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,12 +18,26 @@ public class MedicoController {
 
     @PostMapping
     @Transactional
-    public void cadastrar(@RequestBody @Valid DadosCadastroMedido dados) {
+    public void cadastrar(@RequestBody @Valid DadosCadastroMedico dados) {
         medicoRepository.save(new Medico(dados));
     }
 
     @GetMapping
     public Page<DadosListagemMedico> listar(@PageableDefault(sort = {"nome"}) Pageable paginacao) {
-        return medicoRepository.findAll(paginacao).map(DadosListagemMedico::new);
+        return medicoRepository.findAllByAtivoTrue(paginacao).map(DadosListagemMedico::new);
+    }
+
+    @PutMapping
+    @Transactional
+    public void atualizar(@RequestBody @Valid DadosAtualizacaoMedico dados) {
+        var medico = medicoRepository.getReferenceById(dados.id());
+        medico.atualizarInformacoes(dados);
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public void inativar(@PathVariable Long id) {
+        var medico = medicoRepository.getReferenceById(id);
+        medico.inativar();
     }
 }
