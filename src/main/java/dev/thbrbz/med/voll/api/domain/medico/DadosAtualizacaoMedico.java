@@ -1,6 +1,6 @@
-package dev.thbrbz.med.voll.api.medico;
+package dev.thbrbz.med.voll.api.domain.medico;
 
-import dev.thbrbz.med.voll.api.endereco.DadosEndereco;
+import dev.thbrbz.med.voll.api.domain.endereco.DadosEndereco;
 import jakarta.validation.constraints.NotNull;
 
 public record DadosAtualizacaoMedico(
