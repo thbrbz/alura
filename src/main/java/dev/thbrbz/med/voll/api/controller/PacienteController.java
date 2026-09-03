@@ -1,7 +1,6 @@
 package dev.thbrbz.med.voll.api.controller;
 
-import dev.thbrbz.med.voll.api.medico.DadosDetalhamentoMedico;
-import dev.thbrbz.med.voll.api.paciente.*;
+import dev.thbrbz.med.voll.api.domain.paciente.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

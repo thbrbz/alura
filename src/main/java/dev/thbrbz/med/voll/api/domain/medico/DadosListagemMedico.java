@@ -1,4 +1,4 @@
-package dev.thbrbz.med.voll.api.medico;
+package dev.thbrbz.med.voll.api.domain.medico;
 
 public record DadosListagemMedico(
         Long id,

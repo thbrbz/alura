@@ -1,6 +1,6 @@
-package dev.thbrbz.med.voll.api.medico;
+package dev.thbrbz.med.voll.api.domain.medico;
 
-import dev.thbrbz.med.voll.api.endereco.Endereco;
+import dev.thbrbz.med.voll.api.domain.endereco.Endereco;
 
 public record DadosDetalhamentoMedico(
         Long id,
