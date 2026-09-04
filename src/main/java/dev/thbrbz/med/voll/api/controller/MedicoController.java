@@ -1,19 +1,23 @@
 package dev.thbrbz.med.voll.api.controller;
 
 import dev.thbrbz.med.voll.api.domain.medico.*;
+import dev.thbrbz.med.voll.api.domain.usuario.Role;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
-@RequestMapping("/medicos")
+@RequestMapping(MedicoController.ENDPOINT)
 public class MedicoController {
+
+    public static final String ENDPOINT = "/medicos";
 
     @Autowired
     private MedicoRepository medicoRepository;
@@ -45,6 +49,7 @@ public class MedicoController {
 
     @PutMapping
     @Transactional
+    @Secured({ Role.Constants.ROLE_ADMIN })
     public ResponseEntity atualizar(@RequestBody @Valid DadosAtualizacaoMedico dados) {
         var medico = medicoRepository.getReferenceById(dados.id());
         medico.atualizarInformacoes(dados);
