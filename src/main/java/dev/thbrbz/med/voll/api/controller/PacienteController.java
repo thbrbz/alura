@@ -1,6 +1,7 @@
 package dev.thbrbz.med.voll.api.controller;
 
 import dev.thbrbz.med.voll.api.domain.paciente.*;
+import dev.thbrbz.med.voll.api.infra.security.AdminAuthorization;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,8 +13,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
-@RequestMapping("pacientes")
+@RequestMapping(PacienteController.ENDPOINT)
 public class PacienteController {
+
+    public static final String ENDPOINT = "/pacientes";
 
     @Autowired
     private PacienteRepository repository;
@@ -45,6 +48,7 @@ public class PacienteController {
 
     @PutMapping
     @Transactional
+    @AdminAuthorization
     public ResponseEntity atualizar(@RequestBody @Valid DadosAtualizacaoPaciente dados) {
         var paciente = repository.getReferenceById(dados.id());
         paciente.atualizarInformacoes(dados);

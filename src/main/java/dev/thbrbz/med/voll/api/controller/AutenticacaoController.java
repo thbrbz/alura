@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping(AutenticacaoController.ENDPOINT)
 public class AutenticacaoController {
+
+    public static final String ENDPOINT = "/login";
 
     @Autowired
     AuthenticationManager authenticationManager;
