@@ -3,7 +3,6 @@ package dev.thbrbz.med.voll.api.controller;
 import dev.thbrbz.med.voll.api.domain.consulta.DadosCancelamentoConsulta;
 import dev.thbrbz.med.voll.api.domain.consulta.AgendaDeConsulta;
 import dev.thbrbz.med.voll.api.domain.consulta.DadosAgendamentoConsulta;
-import dev.thbrbz.med.voll.api.domain.consulta.DadosDetalhamentoConsulta;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +19,9 @@ public class ConsultaController {
     @PostMapping
     @Transactional
     public ResponseEntity agendar(@RequestBody @Valid DadosAgendamentoConsulta dados) {
-        agendaDeConsulta.agendar(dados);
-        return ResponseEntity.ok().body(new DadosDetalhamentoConsulta(null, null, null, null));
+        var detalhamentoConsulta = agendaDeConsulta.agendar(dados);
+
+        return ResponseEntity.ok(detalhamentoConsulta);
     }
 
     @DeleteMapping
