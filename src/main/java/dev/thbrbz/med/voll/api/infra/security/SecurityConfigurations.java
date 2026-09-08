@@ -36,6 +36,7 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                     authorizationManagerRequestMatcherRegistry
                             .requestMatchers(HttpMethod.POST, AutenticacaoController.ENDPOINT).permitAll()
+                            .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
                             .requestMatchers(HttpMethod.DELETE, MedicoController.ENDPOINT).hasAuthority(Role.ROLE_ADMIN.name())
                             .requestMatchers(HttpMethod.DELETE, PacienteController.ENDPOINT).hasAuthority(Role.ROLE_ADMIN.name())
                             .anyRequest().authenticated()
