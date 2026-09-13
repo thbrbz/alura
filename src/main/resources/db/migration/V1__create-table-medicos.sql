@@ -1,5 +1,5 @@
 create table medicos(
-    id bigserial,
+    id bigserial not null,
     nome varchar(100) not null,
     email varchar(100) not null unique,
     telefone varchar(20) not null,
