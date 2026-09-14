@@ -5,10 +5,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -19,14 +17,6 @@ public class SecurityConfig {
 
     @Value("${api.auth.secret.key}")
     private String secretKey;
-
-    @Bean
-    public UserDetailsService userDetailsServiceBean() {
-        UserDetails user1 = User.builder().username("admin@email.com").password("{noop}admin").roles("ADMIN").build();
-        UserDetails user2 = User.builder().username("user@email.com").password("{noop}user").roles("USER").build();
-
-        return new InMemoryUserDetailsManager(user1, user2);
-    }
 
     @Bean
     public SecurityFilterChain filtrosSeguranca(HttpSecurity http) throws Exception {
@@ -46,4 +36,29 @@ public class SecurityConfig {
                                 .tokenValiditySeconds(UMA_DIA))   // -> Válido por um dia.
                 .build();
     }
+
+    @Bean
+    public PasswordEncoder  passwordEncoderBean() {
+        return new BCryptPasswordEncoder();
+    }
+
+    /*
+    --> Caso queira configurar usuários em memória de execução
+    @Bean
+    public UserDetailsService userDetailsServiceBean() {
+        UserDetails user1 = User.builder().username("admin@email.com").password("{noop}admin").roles("ADMIN").build();
+        UserDetails user2 = User.builder().username("user@email.com").password("{noop}user").roles("USER").build();
+
+        return new InMemoryUserDetailsManager(user1, user2);
+    }
+
+    --> Caso fosse necessário configurar o AuthenticationManager
+    @Bean
+    public AuthenticationManager authenticationManagerBean(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder);
+
+        return new ProviderManager(authenticationProvider);
+    } */
 }
