@@ -1,10 +1,6 @@
 package med.voll.web_application.domain.paciente;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "pacientes")
@@ -21,7 +17,8 @@ public class Paciente {
     @Deprecated
     public Paciente(){}
 
-    public Paciente(DadosCadastroPaciente dados) {
+    public Paciente(Long id, DadosCadastroPaciente dados) {
+        this.id = id;
         modificarDados(dados);
     }
 
@@ -31,6 +28,7 @@ public class Paciente {
         this.telefone = dados.telefone();
         this.cpf = dados.cpf();
     }
+
     public Long getId() {
         return id;
     }
