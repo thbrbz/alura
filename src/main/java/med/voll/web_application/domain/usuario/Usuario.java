@@ -2,9 +2,11 @@ package med.voll.web_application.domain.usuario;
 
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -17,18 +19,22 @@ public class Usuario  implements UserDetails {
     private String email;
     private String senha;
 
+    @Enumerated(EnumType.STRING)
+    private Perfil perfil;
+
     @Deprecated
     public Usuario() {}
 
-    public Usuario(String nome, String email, String senha) {
+    public Usuario(String nome, String email, String senha, Perfil perfil) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
+        this.perfil = perfil;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + perfil.name()));
     }
 
     @Override
@@ -47,5 +53,9 @@ public class Usuario  implements UserDetails {
 
     public Long getId() {
         return this.id;
+    }
+
+    public Perfil getPerfil() {
+        return perfil;
     }
 }
