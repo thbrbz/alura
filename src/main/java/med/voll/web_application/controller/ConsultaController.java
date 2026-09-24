@@ -40,6 +40,7 @@ public class ConsultaController {
     }
 
     @GetMapping("formulario")
+    @PreAuthorize("hasRole('ATENDENTE') OR hasRole('PACIENTE')")
     public String carregarPaginaAgendaConsulta(Long id, Model model) {
         if (id != null) {
             model.addAttribute("dados", service.carregarPorId(id));
