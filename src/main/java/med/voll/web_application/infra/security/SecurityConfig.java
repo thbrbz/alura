@@ -3,12 +3,14 @@ package med.voll.web_application.infra.security;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -20,7 +22,7 @@ public class SecurityConfig {
     private String secretKey;
 
     @Bean
-    public SecurityFilterChain filtrosSeguranca(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filtrosSeguranca(HttpSecurity http, OncePerRequestFilter filtroAlteracaoSenha) throws Exception {
         return http
                 .authorizeHttpRequests(req -> {
                     req.requestMatchers("/css/**", "/js/**", "/assets/**", "/", "/index", "/home").permitAll();
@@ -31,6 +33,7 @@ public class SecurityConfig {
                     req.requestMatchers(HttpMethod.PUT, "/consultas/**").hasAnyRole("ATENDENTE", "PACIENTE");*/ // -> Configuração feita diretamente nos controllers.
                     req.anyRequest().authenticated();
                 })
+                .addFilterBefore(filtroAlteracaoSenha, UsernamePasswordAuthenticationFilter.class)
                 .formLogin(form -> form.loginPage("/login")
                         .defaultSuccessUrl("/")
                         .permitAll())
@@ -40,6 +43,7 @@ public class SecurityConfig {
                         rememberMe.key(this.secretKey)
                                 //.alwaysRemember(true)           // -> Caso queira que o login seja sempre lembrado, criando o cookie remember-me com validade de 2 semanas.
                                 .tokenValiditySeconds(UMA_DIA))   // -> Válido por um dia.
+                .csrf(Customizer.withDefaults())
                 .build();
     }
 
