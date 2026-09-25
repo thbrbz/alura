@@ -1,9 +1,14 @@
 package med.voll.web_application.domain.usuario;
 
 import jakarta.persistence.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -90,5 +95,14 @@ public class Usuario  implements UserDetails {
     public void alterarSenha(String senhaCriptografada) {
         this.senha = senhaCriptografada;
         this.setSenhaAlterada(true);
+
+        SecurityContextHolder.clearContext();
+
+        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        HttpServletRequest request = attr.getRequest();
+        HttpSession session = request.getSession(false);
+
+        if (session != null)
+            session.invalidate();
     }
 }
