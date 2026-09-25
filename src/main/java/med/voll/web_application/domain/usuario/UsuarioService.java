@@ -1,12 +1,14 @@
 package med.voll.web_application.domain.usuario;
 
 import med.voll.web_application.domain.RegraDeNegocioException;
+import med.voll.web_application.domain.email.EmailService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -14,10 +16,12 @@ public class UsuarioService implements UserDetailsService {
 
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder encriptador;
+    private final EmailService emailService;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder encriptador) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder encriptador, EmailService emailService) {
         this.usuarioRepository = usuarioRepository;
         this.encriptador = encriptador;
+        this.emailService = emailService;
     }
 
     @Override
@@ -28,11 +32,11 @@ public class UsuarioService implements UserDetailsService {
 
     public Long salvarUsuario(String nome, String email, Perfil perfil) {
         String primeiraSenha = UUID.randomUUID().toString().substring(0, 8);
-        System.out.println("Senha gerada: " + primeiraSenha);
-
         String senhaCriptografada = encriptador.encode(primeiraSenha);
 
         var usuario = usuarioRepository.save(new Usuario(nome, email, senhaCriptografada, perfil));
+        emailService.enviarEmailSenhaAleatoria(usuario, senhaCriptografada);
+
         return usuario.getId();
     }
 
@@ -49,5 +53,16 @@ public class UsuarioService implements UserDetailsService {
 
         String senhaCriptografada = encriptador.encode(dados.novaSenha());
         logado.alterarSenha(senhaCriptografada);
+    }
+
+    public void enviarToken(String email) {
+        var usuario = usuarioRepository.findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado!"));
+
+        String token = UUID.randomUUID().toString();
+        usuario.setToken(token);
+        usuario.setExpiracaoToken(LocalDateTime.now().plusMinutes(15));
+
+        emailService.enviarEmailSenha(usuario);
     }
 }
