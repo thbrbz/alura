@@ -1,5 +1,9 @@
+CREATE TYPE categorias AS ENUM ('PROGRAMACAO', 'IA', 'FRONTEND', 'DADOS', 'INOVACAO', 'MARKETING', 'DESIGN');
+
 CREATE TABLE cursos (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id BIGINT not null,
     nome VARCHAR(255) NOT NULL UNIQUE,
-    categoria ENUM('PROGRAMACAO', 'IA', 'FRONTEND', 'DADOS', 'INOVACAO', 'MARKETING', 'DESIGN') NOT NULL
+    categoria categorias NOT NULL,
+
+    primary key(id)
 );
