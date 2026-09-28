@@ -11,10 +11,17 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class ConfiguracoesSeguranca {
+
+    private final FiltroTokenAcesso filtroTokenAcesso;
+
+    public ConfiguracoesSeguranca(FiltroTokenAcesso filtroTokenAcesso) {
+        this.filtroTokenAcesso = filtroTokenAcesso;
+    }
 
     @Bean
     public PasswordEncoder PasswordEncoderBean() {
@@ -24,8 +31,15 @@ public class ConfiguracoesSeguranca {
     @Bean
     public SecurityFilterChain securityFilterChainBean(HttpSecurity http) throws Exception {
         return http
+                .authorizeHttpRequests(
+                        req -> {
+                            req.requestMatchers("/login", "/atualizar-token", "/atualizar-token-usuario").permitAll();
+                            req.anyRequest().authenticated();
+                        }
+                )
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
+                .addFilterBefore(filtroTokenAcesso, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 

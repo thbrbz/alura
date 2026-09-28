@@ -1,14 +1,12 @@
 package br.com.forum_hub.domain.usuario;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.UUID;
 
 @Entity
 @Table(name="usuarios")
@@ -22,6 +20,8 @@ public class Usuario implements UserDetails {
     private String username;
     private String biografia;
     private  String miniBiografia;
+    private String refreshToken;
+    private LocalDateTime expiracaoRefreshToken;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -48,5 +48,19 @@ public class Usuario implements UserDetails {
 
     public String getMiniBiografia() {
         return miniBiografia;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public boolean refreshTokenExpirado() {
+        return expiracaoRefreshToken.isBefore(LocalDateTime.now());
+    }
+
+    public String novoRefreshToken() {
+        this.refreshToken = UUID.randomUUID().toString();
+        this.expiracaoRefreshToken = LocalDateTime.now().plusMinutes(120);
+        return refreshToken;
     }
 }
