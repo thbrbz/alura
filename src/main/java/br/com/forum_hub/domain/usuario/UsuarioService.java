@@ -74,4 +74,28 @@ public class UsuarioService implements UserDetailsService {
 
         usuario.verificar();
     }
+
+    @Transactional
+    public Usuario editarPerfil(Usuario usuario, DadosEdicaoUsuario dados) {
+        return usuario.alterarDados(dados);
+    }
+
+    @Transactional
+    public void alterarSenha(DadosAlteracaoSenha dados, Usuario logado) {
+        if(!passwordEncoder.matches(dados.senhaAtual(), logado.getPassword())){
+            throw new RegraDeNegocioException("Senha digitada não confere com senha atual!");
+        }
+
+        if(!dados.novaSenha().equals(dados.novaSenhaConfirmacao())){
+            throw new RegraDeNegocioException("Senha e confirmação não conferem!");
+        }
+
+        String senhaCriptografada = passwordEncoder.encode(dados.novaSenha());
+        logado.alterarSenha(senhaCriptografada);
+    }
+
+    @Transactional
+    public void desativarUsuario(Usuario usuario) {
+        usuario.desativar();
+    }
 }
