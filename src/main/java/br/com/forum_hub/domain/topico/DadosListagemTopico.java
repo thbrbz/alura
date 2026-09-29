@@ -16,6 +16,6 @@ public record DadosListagemTopico(
         String curso
 ) {
     public DadosListagemTopico(Topico topico) {
-        this(topico.getId(), topico.getTitulo(), topico.getMensagem(), topico.getAutor(), topico.getStatus(), topico.getDataCriacao(), topico.getQuantidadeRespostas(), topico.getCurso().getNome());
+        this(topico.getId(), topico.getTitulo(), topico.getMensagem(), topico.getAutor().getNome(), topico.getStatus(), topico.getDataCriacao(), topico.getQuantidadeRespostas(), topico.getCurso().getNome());
     }
 }
