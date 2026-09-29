@@ -12,6 +12,8 @@ import java.util.UUID;
 @Table(name="usuarios")
 public class Usuario implements UserDetails {
 
+    private static final long TEMPO_EXPIRACAO_TOKEN = 30;
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
@@ -22,6 +24,24 @@ public class Usuario implements UserDetails {
     private  String miniBiografia;
     private String refreshToken;
     private LocalDateTime expiracaoRefreshToken;
+    private String token;
+    private LocalDateTime expiracaoToken;
+    private Boolean verificado;
+
+    @Deprecated
+    public Usuario() {}
+
+    public Usuario(DadosCadastroUsuario dados, String senhaCriptografada) {
+        this.nome = dados.nome();
+        this.email = dados.email();
+        this.senha = senhaCriptografada;
+        this.username = dados.username();
+        this.biografia = dados.biografia();
+        this.miniBiografia = dados.miniBiografia();
+        this.token = UUID.randomUUID().toString();
+        this.expiracaoToken = LocalDateTime.now().plusMinutes(TEMPO_EXPIRACAO_TOKEN);
+        this.verificado = false;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -54,6 +74,18 @@ public class Usuario implements UserDetails {
         return this.id;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public LocalDateTime getExpiracaoToken() {
+        return expiracaoToken;
+    }
+
+    public Boolean getVerificado() {
+        return verificado;
+    }
+
     public boolean refreshTokenExpirado() {
         return expiracaoRefreshToken.isBefore(LocalDateTime.now());
     }
@@ -62,5 +94,11 @@ public class Usuario implements UserDetails {
         this.refreshToken = UUID.randomUUID().toString();
         this.expiracaoRefreshToken = LocalDateTime.now().plusMinutes(120);
         return refreshToken;
+    }
+
+    public void verificar() {
+        this.verificado = true;
+        this.token = null;
+        this.expiracaoToken = null;
     }
 }
