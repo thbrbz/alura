@@ -27,6 +27,7 @@ public class Usuario implements UserDetails {
     private String token;
     private LocalDateTime expiracaoToken;
     private Boolean verificado;
+    private Boolean ativo;
 
     @Deprecated
     public Usuario() {}
@@ -41,6 +42,7 @@ public class Usuario implements UserDetails {
         this.token = UUID.randomUUID().toString();
         this.expiracaoToken = LocalDateTime.now().plusMinutes(TEMPO_EXPIRACAO_TOKEN);
         this.verificado = false;
+        this.ativo = false;
     }
 
     @Override
@@ -100,5 +102,31 @@ public class Usuario implements UserDetails {
         this.verificado = true;
         this.token = null;
         this.expiracaoToken = null;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return ativo;
+    }
+
+    public void desativar() {
+        this.ativo = false;
+    }
+
+    public Usuario alterarDados(DadosEdicaoUsuario dados) {
+        if(dados.nomeUsuario() != null)
+            this.nome = dados.nomeUsuario();
+
+        if(dados.miniBiografia() != null)
+            this.miniBiografia = dados.miniBiografia();
+
+        if(dados.biografia() != null)
+            this.biografia = dados.biografia();
+
+        return this;
+    }
+
+    public void alterarSenha(String senhaCriptografada) {
+        this.senha = senhaCriptografada;
     }
 }
