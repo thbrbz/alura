@@ -1,5 +1,6 @@
 package br.com.forum_hub.controller;
 
+import br.com.forum_hub.domain.perfil.DadosPerfil;
 import br.com.forum_hub.domain.usuario.*;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -46,5 +47,17 @@ public class UsuarioController {
     public ResponseEntity<Void> banirUsuario(@AuthenticationPrincipal Usuario logado){
         usuarioService.desativarUsuario(logado);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/adicionar-perfil/{id}")
+    public ResponseEntity<DadosListagemUsuario> adicionarPerfil(@PathVariable Long id, @RequestBody @Valid DadosPerfil dados) {
+        var usuario = usuarioService.adicionarPerfil(id, dados);
+        return ResponseEntity.ok(new DadosListagemUsuario(usuario));
+    }
+
+    @PatchMapping("remover-perfil/{id}")
+    public ResponseEntity<DadosListagemUsuario> removerPerfil(@PathVariable Long id, @RequestBody @Valid DadosPerfil dados){
+        var usuario = usuarioService.removerPerfil(id, dados);
+        return ResponseEntity.ok(new DadosListagemUsuario(usuario));
     }
 }

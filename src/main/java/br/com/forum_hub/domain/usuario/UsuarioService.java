@@ -1,8 +1,12 @@
 package br.com.forum_hub.domain.usuario;
 
+import br.com.forum_hub.domain.perfil.DadosPerfil;
+import br.com.forum_hub.domain.perfil.PerfilNome;
+import br.com.forum_hub.domain.perfil.PerfilService;
 import br.com.forum_hub.infra.email.EmailService;
 import br.com.forum_hub.infra.exception.RegraDeNegocioException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,11 +23,13 @@ public class UsuarioService implements UserDetailsService {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final PerfilService perfilService;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, EmailService emailService, PerfilService perfilService) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
+        this.perfilService = perfilService;
     }
 
     @Override
@@ -54,11 +60,13 @@ public class UsuarioService implements UserDetailsService {
     public Usuario cadastrar(DadosCadastroUsuario dados) {
         Optional<Usuario> optionalUsuario = usuarioRepository.findByEmailIgnoreCaseOrUsernameIgnoreCase(dados.email(),  dados.username());
 
+        var perfil = perfilService.buscarPorNome(PerfilNome.ESTUDANTE);
+
         if(optionalUsuario.isPresent())
             throw new RegraDeNegocioException("Já existe uma conta cadastrada com esse email ou nome de usuário!");
 
         String senhaCriptografada = passwordEncoder.encode(dados.senha());
-        var usuario = new Usuario(dados, senhaCriptografada);
+        var usuario = new Usuario(dados, senhaCriptografada, perfil);
 
         emailService.enviarEmailVerificacao(usuario);
 
@@ -97,5 +105,23 @@ public class UsuarioService implements UserDetailsService {
     @Transactional
     public void desativarUsuario(Usuario usuario) {
         usuario.desativar();
+    }
+
+    @Transactional
+    public Usuario adicionarPerfil(Long id, DadosPerfil dados) {
+        var usuario = buscarPorId(id);
+        var perfil = perfilService.buscarPorNome(dados.perfilNome());
+        usuario.adicionarPerfil(perfil);
+
+        return usuario;
+    }
+
+    @Transactional
+    public Usuario removerPerfil(Long id, DadosPerfil dados) {
+        var usuario = usuarioRepository.findById(id).orElseThrow();
+        var perfil = perfilService.buscarPorNome(dados.perfilNome());
+        usuario.removerPerfil(perfil);
+
+        return usuario;
     }
 }
