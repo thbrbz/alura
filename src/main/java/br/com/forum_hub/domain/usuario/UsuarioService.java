@@ -6,7 +6,7 @@ import br.com.forum_hub.domain.perfil.PerfilService;
 import br.com.forum_hub.infra.email.EmailService;
 import br.com.forum_hub.infra.exception.RegraDeNegocioException;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,12 +24,14 @@ public class UsuarioService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final PerfilService perfilService;
+    private final HierarquiaService hierarquiaService;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, EmailService emailService, PerfilService perfilService) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, EmailService emailService, PerfilService perfilService, HierarquiaService hierarquiaService) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
         this.perfilService = perfilService;
+        this.hierarquiaService = hierarquiaService;
     }
 
     @Override
@@ -103,8 +105,19 @@ public class UsuarioService implements UserDetailsService {
     }
 
     @Transactional
-    public void desativarUsuario(Usuario usuario) {
+    public void desativarUsuario(Long id, Usuario logado) {
+        var usuario = usuarioRepository.findById(id).orElseThrow();
+
+        if(hierarquiaService.usuarioNaoTemPermissoes(logado, usuario, "ROLE_ADMIN"))
+            throw new AccessDeniedException("Não é possivel realizar essa operação!");
+
         usuario.desativar();
+    }
+
+    @Transactional
+    public void reativarUsuario(Long id) {
+        var usuario = usuarioRepository.findById(id).orElseThrow();
+        usuario.reativar();
     }
 
     @Transactional
