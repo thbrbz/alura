@@ -2,6 +2,7 @@ package dev.thbrbz.service;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import io.github.cdimascio.dotenv.Dotenv;
 
 import java.net.URI;
 import java.net.URLEncoder;
@@ -15,7 +16,7 @@ public class TradutorDeepLService {
     private static final String API_URL = "https://api-free.deepl.com/v2/translate";
     private static final HttpClient client = HttpClient.newHttpClient();
 
-    private final String apiKey = "979a1b87-aa1e-466e-8540-1b5f11d80402:fx";
+    private final String apiKey = Dotenv.load().get("DEEPL_API_KEY");
 
     public TradutorDeepLService() {
         if (apiKey.isBlank()) {
