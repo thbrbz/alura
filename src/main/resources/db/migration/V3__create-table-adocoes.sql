@@ -1,5 +1,5 @@
 create table adocoes(
-    id bigint not null auto_increment,
+    id serial not null,
     tutor_id bigint not null,
     pet_id bigint not null,
     status varchar(50) not null,

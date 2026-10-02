@@ -1,5 +1,5 @@
 create table pets(
-    id bigint not null auto_increment,
+    id serial not null,
     nome varchar(100) not null,
     idade int not null,
     tipo varchar(50) not null,

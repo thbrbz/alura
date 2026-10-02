@@ -48,3 +48,9 @@ build/
 
 ### Projeto ###
 .env
+
+### Mac OS ###
+.DS_Store
+
+### Projeto ###
+.env
