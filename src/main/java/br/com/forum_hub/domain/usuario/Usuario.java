@@ -42,17 +42,23 @@ public class Usuario implements UserDetails {
     @Deprecated
     public Usuario() {}
 
-    public Usuario(DadosCadastroUsuario dados, String senhaCriptografada, Perfil perfil) {
+    public Usuario(DadosCadastroUsuario dados, String senhaCriptografada, Perfil perfil, Boolean verificado) {
         this.nome = dados.nome();
         this.email = dados.email();
         this.senha = senhaCriptografada;
         this.username = dados.username();
         this.biografia = dados.biografia();
         this.miniBiografia = dados.miniBiografia();
-        this.token = UUID.randomUUID().toString();
-        this.expiracaoToken = LocalDateTime.now().plusMinutes(TEMPO_EXPIRACAO_TOKEN);
-        this.verificado = false;
-        this.ativo = true;
+
+        if (verificado) {
+            aprovarUsuario();
+        } else {
+            this.verificado = false;
+            this.token = UUID.randomUUID().toString();
+            this.expiracaoToken = LocalDateTime.now().plusMinutes(30);
+            this.ativo = false;
+        }
+
         this.perfis.add(perfil);
     }
 
@@ -151,5 +157,12 @@ public class Usuario implements UserDetails {
 
     public void reativar() {
         this.ativo = true;
+    }
+
+    private void aprovarUsuario(){
+        this.verificado = true;
+        this.ativo = true;
+        this.token = null;
+        this.expiracaoToken = null;
     }
 }
