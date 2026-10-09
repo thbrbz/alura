@@ -58,21 +58,34 @@ public class UsuarioService implements UserDetailsService {
         return usuarioRepository.findByToken(token).orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com o token informado!"));
     }
 
+    public Usuario buscarPorEmail(String email) {
+        return usuarioRepository.findByUsernameIgnoreCaseAndVerificadoTrueAndAtivoTrue(email)
+                .orElseThrow(() -> new UsernameNotFoundException("O usuário não foi encontrado com o  email informado!"));
+    }
+
     @Transactional
     public Usuario cadastrar(DadosCadastroUsuario dados) {
-        Optional<Usuario> optionalUsuario = usuarioRepository.findByEmailIgnoreCaseOrUsernameIgnoreCase(dados.email(),  dados.username());
+        var usuario = criarUsuario(dados, false);
+        emailService.enviarEmailVerificacao(usuario);
 
-        var perfil = perfilService.buscarPorNome(PerfilNome.ESTUDANTE);
+        return usuarioRepository.save(usuario);
+    }
+
+    @Transactional
+    public Usuario cadastrarVerificado(DadosCadastroUsuario dados) {
+        var usuario = criarUsuario(dados, true);
+        return usuarioRepository.save(usuario);
+    }
+
+    private Usuario criarUsuario(DadosCadastroUsuario dados, Boolean verificado) {
+        Optional<Usuario> optionalUsuario = usuarioRepository.findByEmailIgnoreCaseOrUsernameIgnoreCase(dados.email(),  dados.username());
 
         if(optionalUsuario.isPresent())
             throw new RegraDeNegocioException("Já existe uma conta cadastrada com esse email ou nome de usuário!");
 
-        String senhaCriptografada = passwordEncoder.encode(dados.senha());
-        var usuario = new Usuario(dados, senhaCriptografada, perfil);
-
-        emailService.enviarEmailVerificacao(usuario);
-
-        return usuarioRepository.save(usuario);
+        var senhaCriptografada = passwordEncoder.encode(dados.senha());
+        var perfil = perfilService.buscarPorNome(PerfilNome.ESTUDANTE);
+        return new Usuario(dados, senhaCriptografada, perfil, verificado);
     }
 
     @Transactional
