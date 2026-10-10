@@ -1,10 +1,10 @@
 package br.com.forum_hub.domain.usuario;
 
 import br.com.forum_hub.domain.perfil.DadosPerfil;
-import br.com.forum_hub.domain.perfil.PerfilNome;
 import br.com.forum_hub.domain.perfil.PerfilService;
 import br.com.forum_hub.infra.email.EmailService;
 import br.com.forum_hub.infra.exception.RegraDeNegocioException;
+import br.com.forum_hub.infra.seguranca.totp.TotpService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,22 +14,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-
 @Service
 public class UsuarioService implements UserDetailsService {
 
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
-    private final EmailService emailService;
     private final PerfilService perfilService;
     private final HierarquiaService hierarquiaService;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, EmailService emailService, PerfilService perfilService, HierarquiaService hierarquiaService) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, EmailService emailService, PerfilService perfilService, HierarquiaService hierarquiaService, TotpService totpService) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
-        this.emailService = emailService;
         this.perfilService = perfilService;
         this.hierarquiaService = hierarquiaService;
     }
@@ -59,43 +54,8 @@ public class UsuarioService implements UserDetailsService {
     }
 
     public Usuario buscarPorEmail(String email) {
-        return usuarioRepository.findByUsernameIgnoreCaseAndVerificadoTrueAndAtivoTrue(email)
+        return usuarioRepository.findByEmailIgnoreCaseAndVerificadoTrueAndAtivoTrue(email)
                 .orElseThrow(() -> new UsernameNotFoundException("O usuário não foi encontrado com o  email informado!"));
-    }
-
-    @Transactional
-    public Usuario cadastrar(DadosCadastroUsuario dados) {
-        var usuario = criarUsuario(dados, false);
-        emailService.enviarEmailVerificacao(usuario);
-
-        return usuarioRepository.save(usuario);
-    }
-
-    @Transactional
-    public Usuario cadastrarVerificado(DadosCadastroUsuario dados) {
-        var usuario = criarUsuario(dados, true);
-        return usuarioRepository.save(usuario);
-    }
-
-    private Usuario criarUsuario(DadosCadastroUsuario dados, Boolean verificado) {
-        Optional<Usuario> optionalUsuario = usuarioRepository.findByEmailIgnoreCaseOrUsernameIgnoreCase(dados.email(),  dados.username());
-
-        if(optionalUsuario.isPresent())
-            throw new RegraDeNegocioException("Já existe uma conta cadastrada com esse email ou nome de usuário!");
-
-        var senhaCriptografada = passwordEncoder.encode(dados.senha());
-        var perfil = perfilService.buscarPorNome(PerfilNome.ESTUDANTE);
-        return new Usuario(dados, senhaCriptografada, perfil, verificado);
-    }
-
-    @Transactional
-    public void verificarEmail(String token) {
-        var usuario = buscarPorToken(token);
-
-        if (usuario.getExpiracaoToken().isBefore(LocalDateTime.now()))
-            throw new RegraDeNegocioException("Link de verificação expirado!");
-
-        usuario.verificar();
     }
 
     @Transactional
@@ -149,5 +109,10 @@ public class UsuarioService implements UserDetailsService {
         usuario.removerPerfil(perfil);
 
         return usuario;
+    }
+
+    public Usuario buscarPorUsername(String username) {
+        return usuarioRepository.findByUsernameIgnoreCaseAndVerificadoTrueAndAtivoTrue(username)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com o username informado!"));
     }
 }

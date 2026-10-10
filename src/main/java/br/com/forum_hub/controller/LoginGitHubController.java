@@ -3,6 +3,7 @@ package br.com.forum_hub.controller;
 import br.com.forum_hub.domain.autenticacao.DadosTokenAcesso;
 import br.com.forum_hub.domain.autenticacao.TokenService;
 import br.com.forum_hub.domain.autenticacao.github.LoginGithubService;
+import br.com.forum_hub.domain.usuario.RegistroUsuarioService;
 import br.com.forum_hub.domain.usuario.Usuario;
 import br.com.forum_hub.domain.usuario.UsuarioService;
 import org.springframework.http.HttpHeaders;
@@ -25,11 +26,13 @@ public class LoginGitHubController {
     private final LoginGithubService loginGithubService;
     private final UsuarioService usuarioService;
     private final TokenService tokenService;
+    private final RegistroUsuarioService registroUsuarioService;
 
-    public LoginGitHubController(LoginGithubService loginGithubService, UsuarioService usuarioService, TokenService tokenService) {
+    public LoginGitHubController(LoginGithubService loginGithubService, UsuarioService usuarioService, TokenService tokenService, RegistroUsuarioService registroUsuarioService) {
         this.loginGithubService = loginGithubService;
         this.usuarioService = usuarioService;
         this.tokenService = tokenService;
+        this.registroUsuarioService = registroUsuarioService;
     }
 
     @GetMapping
@@ -70,7 +73,7 @@ public class LoginGitHubController {
     @GetMapping("/registro-autorizado")
     public ResponseEntity<DadosTokenAcesso> registrarOAuth(@RequestParam String code){
         var dadosUsuario = loginGithubService.obterDadosOAuth(code);
-        var usuario = usuarioService.cadastrarVerificado(dadosUsuario);
+        var usuario = registroUsuarioService.cadastrarVerificado(dadosUsuario);
 
         var authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
