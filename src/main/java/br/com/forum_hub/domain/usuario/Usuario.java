@@ -31,6 +31,8 @@ public class Usuario implements UserDetails {
     private LocalDateTime expiracaoToken;
     private Boolean verificado;
     private Boolean ativo;
+    private String secret;
+    private Boolean a2fAtiva;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -90,7 +92,7 @@ public class Usuario implements UserDetails {
     }
 
     public Long getId() {
-        return this.id;
+        return id;
     }
 
     public String getToken() {
@@ -103,6 +105,10 @@ public class Usuario implements UserDetails {
 
     public Boolean getVerificado() {
         return verificado;
+    }
+
+    public String getSecret() {
+        return secret;
     }
 
     public boolean refreshTokenExpirado() {
@@ -164,5 +170,9 @@ public class Usuario implements UserDetails {
         this.ativo = true;
         this.token = null;
         this.expiracaoToken = null;
+    }
+
+    public void gerarSecret(String secret) {
+        this.secret = secret;
     }
 }

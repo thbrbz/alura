@@ -6,7 +6,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 public class UsuarioController {
@@ -17,18 +16,10 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
-    @PostMapping("/registrar")
-    public ResponseEntity<DadosListagemUsuario> cadastrar(@RequestBody @Valid DadosCadastroUsuario dados, UriComponentsBuilder uriBuilder) {
-        var usuario = usuarioService.cadastrar(dados);
-        var uri = uriBuilder.path("/{username}").buildAndExpand(usuario.getUsername()).toUri();
-
-        return ResponseEntity.created(uri).body(new DadosListagemUsuario(usuario));
-    }
-
-    @GetMapping("verificar-conta")
-    public ResponseEntity<String> verificarEmail(@RequestParam String codigo) {
-        usuarioService.verificarEmail(codigo);
-        return ResponseEntity.ok("Conta verificada com sucesso!");
+    @GetMapping("/{username}")
+    public ResponseEntity<DadosListagemUsuario> exibirPerfil(@PathVariable String username) {
+        var usuario = usuarioService.buscarPorUsername(username);
+        return ResponseEntity.ok(new DadosListagemUsuario(usuario));
     }
 
     @PutMapping("/editar-perfil")
