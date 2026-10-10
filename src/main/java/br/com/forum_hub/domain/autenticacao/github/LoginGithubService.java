@@ -2,6 +2,7 @@ package br.com.forum_hub.domain.autenticacao.github;
 
 import br.com.forum_hub.domain.usuario.DadosCadastroUsuario;
 import io.github.cdimascio.dotenv.Dotenv;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -15,12 +16,14 @@ import java.util.UUID;
 @Service
 public class LoginGithubService {
 
-    private final Dotenv dotenv = Dotenv.load();
+    @Value("${github.oauth.client.id}")
+    private String CLIENT_ID;
+
+    @Value("${github.oauth.client.secret}")
+    private String CLIENT_SECRET;
 
     private final String URL_API = "https://api.github.com";
     private final String URL = "https://github.com/login/oauth";
-    private final String CLIENT_ID = dotenv.get("GITHUB_CLIENT_ID");
-    private final String CLIENT_SECRET = dotenv.get("GITHUB_CLIENT_SECRET");
     private final String REDIRECT_URI = "http://localhost:8080/login/github/autorizado";
     private final RestClient restClient;
 

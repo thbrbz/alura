@@ -2,7 +2,7 @@ package br.com.forum_hub.controller;
 
 import br.com.forum_hub.domain.autenticacao.DadosTokenAcesso;
 import br.com.forum_hub.domain.autenticacao.TokenService;
-import br.com.forum_hub.domain.autenticacao.github.LoginGithubService;
+import br.com.forum_hub.domain.autenticacao.google.LoginGoogleService;
 import br.com.forum_hub.domain.usuario.Usuario;
 import br.com.forum_hub.domain.usuario.UsuarioService;
 import org.springframework.http.HttpHeaders;
@@ -19,22 +19,22 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/login/github")
-public class LoginGitHubController {
+@RequestMapping("/login/google")
+public class LoginGoogleController {
 
-    private final LoginGithubService loginGithubService;
+    private final LoginGoogleService loginGoogleService;
     private final UsuarioService usuarioService;
     private final TokenService tokenService;
 
-    public LoginGitHubController(LoginGithubService loginGithubService, UsuarioService usuarioService, TokenService tokenService) {
-        this.loginGithubService = loginGithubService;
+    public LoginGoogleController(LoginGoogleService loginGoogleService, UsuarioService usuarioService, TokenService tokenService) {
+        this.loginGoogleService = loginGoogleService;
         this.usuarioService = usuarioService;
         this.tokenService = tokenService;
     }
 
     @GetMapping
-    public ResponseEntity<Void> redirecionarGithub() {
-        var url = loginGithubService.gerarUrl();
+    public ResponseEntity<Void> redirecionarGoogle() {
+        var url = loginGoogleService.gerarUrl();
 
         var headers = new HttpHeaders();
         headers.setLocation(URI.create(url));
@@ -44,7 +44,7 @@ public class LoginGitHubController {
 
     @GetMapping("/autorizado")
     public ResponseEntity<DadosTokenAcesso> autenticarUsuarioOAuth(@RequestParam String code) {
-        var email = loginGithubService.obterEmail(code);
+        var email = loginGoogleService.obterEmail(code);
         var usuario = usuarioService.buscarPorEmail(email);
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
@@ -57,8 +57,8 @@ public class LoginGitHubController {
     }
 
     @GetMapping("/registro")
-    public ResponseEntity<Void> redirecionarRegistroGithub(){
-        var url = loginGithubService.gerarUrlRegistro();
+    public ResponseEntity<Void> redirecionarRegistroGoogle(){
+        var url = loginGoogleService.gerarUrlRegistro();
         var headers = new HttpHeaders();
 
         headers.setLocation(URI.create(url));
@@ -69,7 +69,7 @@ public class LoginGitHubController {
 
     @GetMapping("/registro-autorizado")
     public ResponseEntity<DadosTokenAcesso> registrarOAuth(@RequestParam String code){
-        var dadosUsuario = loginGithubService.obterDadosOAuth(code);
+        var dadosUsuario = loginGoogleService.obterDadosOAuth(code);
         var usuario = usuarioService.cadastrarVerificado(dadosUsuario);
 
         var authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
