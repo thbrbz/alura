@@ -56,7 +56,7 @@ public class LoginGoogleController {
         String token = tokenService.gerarToken((Usuario) authentication.getPrincipal());
         String refreshToken = tokenService.gerarRefreshToken((Usuario) authentication.getPrincipal());
 
-        return ResponseEntity.ok(new DadosTokenAcesso(token, refreshToken));
+        return ResponseEntity.ok(new DadosTokenAcesso(token, refreshToken, false));
     }
 
     @GetMapping("/registro")
@@ -81,6 +81,6 @@ public class LoginGoogleController {
         String tokenAcesso = tokenService.gerarToken(usuario);
         String refreshToken = tokenService.gerarRefreshToken(usuario);
 
-        return ResponseEntity.ok(new DadosTokenAcesso(tokenAcesso, refreshToken));
+        return ResponseEntity.ok(new DadosTokenAcesso(tokenAcesso, refreshToken, false));
     }
 }
