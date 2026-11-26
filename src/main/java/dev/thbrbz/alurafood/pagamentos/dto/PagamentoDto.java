@@ -1,8 +1,8 @@
-package pagamentos.dto;
+package dev.thbrbz.alurafood.pagamentos.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import pagamentos.model.Status;
+import dev.thbrbz.alurafood.pagamentos.model.Status;
 
 import java.math.BigDecimal;
 

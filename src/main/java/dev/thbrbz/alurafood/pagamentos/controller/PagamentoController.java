@@ -1,4 +1,4 @@
-package pagamentos.controller;
+package dev.thbrbz.alurafood.pagamentos.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -9,8 +9,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-import pagamentos.dto.PagamentoDto;
-import pagamentos.service.PagamentoService;
+import dev.thbrbz.alurafood.pagamentos.dto.PagamentoDto;
+import dev.thbrbz.alurafood.pagamentos.service.PagamentoService;
 
 import java.net.URI;
 
