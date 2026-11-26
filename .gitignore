@@ -3,18 +3,7 @@ target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-.kotlin
 
-### IntelliJ IDEA ###
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
-*.iws
-*.iml
-*.ipr
-
-### Eclipse ###
 ### STS ###
 .apt_generated
 .classpath
@@ -45,16 +34,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
-
-### Projeto ###
-.env
-
-### Mac OS ###
-.DS_Store
-
-### Projeto ###
-.env
-
 
 ### Projeto ###
 .env
