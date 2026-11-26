@@ -1,14 +1,14 @@
-package pagamentos.service;
+package dev.thbrbz.alurafood.pagamentos.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import pagamentos.dto.PagamentoDto;
-import pagamentos.model.Pagamento;
-import pagamentos.model.Status;
-import pagamentos.repository.PagamentoRepository;
+import dev.thbrbz.alurafood.pagamentos.dto.PagamentoDto;
+import dev.thbrbz.alurafood.pagamentos.model.Pagamento;
+import dev.thbrbz.alurafood.pagamentos.model.Status;
+import dev.thbrbz.alurafood.pagamentos.repository.PagamentoRepository;
 
 public class PagamentoService {
 

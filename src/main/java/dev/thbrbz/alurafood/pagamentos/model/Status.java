@@ -1,4 +1,4 @@
-package pagamentos.model;
+package dev.thbrbz.alurafood.pagamentos.model;
 
 public enum Status {
     CRIADO,

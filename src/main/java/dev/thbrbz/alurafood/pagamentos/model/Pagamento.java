@@ -1,4 +1,4 @@
-package pagamentos.model;
+package dev.thbrbz.alurafood.pagamentos.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
